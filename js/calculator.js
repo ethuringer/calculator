@@ -2,14 +2,17 @@
 
 const calcDisplay = document.querySelector('#calculator__display');
 let operatorPressed = false;
+let numberPressed = false;
 let a = 0;
 let b = 0;
 let c = 0;
 
 const numericButtons = Array
     .from(document.querySelectorAll('.btn__number'))
-    .map(num => num.addEventListener('click', () =>
-        calcDisplay.value += num.value)
+    .map(num => num.addEventListener('click', () => {
+        calcDisplay.value += num.value,
+            numberPressed = true
+    })
     );
 
 const operatorButtons = Array
@@ -17,12 +20,19 @@ const operatorButtons = Array
     .map(op => op.addEventListener('click', () => {
         if (operatorPressed === false) {
             calcDisplay.value += op.value,
-                operatorPressed = true
+                operatorPressed = true;
+            numberPressed = false;
         }
-        else {
+        else if (numberPressed === true) {
             operatorPressed = true;
+            numberPressed = false;
             calculation();
             calcDisplay.value += op.value;
+            //console.log(operatorPressed,numberPressed);
+        }
+        else {
+            calcDisplay.value = 'Error';
+            setTimeout(clearDisplay, 500);
         }
     })
     );
@@ -64,14 +74,15 @@ function calculation() {
 
 
 function clearDisplay() {
-    const calcDisplay = document.querySelector('#calculator__display')
-    const clearButton = document.querySelector('.btn--c'); {
-        clearButton.addEventListener('click', () => {
-            calcDisplay.value = '',
-                operatorPressed = false,
-                a = 0;
-            b = 0;
-        })
-    }
+    calcDisplay.value = '',
+        operatorPressed = false,
+        numberPressed = false,
+        a = 0;
+    b = 0;
 }
-clearDisplay();
+
+const clearButton = document.querySelector('.btn--c'); {
+    clearButton.addEventListener('click', () => {
+        clearDisplay();
+    })
+}
